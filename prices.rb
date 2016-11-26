@@ -21,12 +21,12 @@ def extract_price(trip_option)
 end
 
 def extract_destination(trip_option)
-
-  #this is how we get to the city (in case we need it)
-  trip_option['pricing'].first['fare'].first['destination']
-
   # This is how we get to destination airport code
-  trip_option['slice'].first['segment'].first['leg'].first['destination']
+  airport_code = trip_option['slice'].first['segment'].first['leg'].first['destination']
+  #this is how we get to the city
+  city_code = trip_option['pricing'].first['fare'].first['destination']
+
+  [city_code, airport_code]
 end
 
 def all_prices_sorted(jsons)
