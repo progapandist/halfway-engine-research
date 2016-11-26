@@ -7,4 +7,7 @@ jsons_one = JSONResults::FROM_ORIGIN1
 jsons_two = JSONResults::FROM_ORIGIN2
 
 comparator = Comparator.new(jsons_one, jsons_two)
-comparator.print_readable
+#comparator.print_readable
+
+test_result = QPXResult.new(jsons_one.first)
+p test_result.list_trips_by_price
