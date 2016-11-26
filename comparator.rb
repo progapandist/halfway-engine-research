@@ -6,7 +6,7 @@ class Comparator
     @jsons_two = jsons_two
   end
 
-  def render_readable
+  def print_readable
     output = prepare_readable(@jsons_one, @jsons_two)
     p output[0]
     puts "========="
