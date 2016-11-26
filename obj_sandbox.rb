@@ -13,4 +13,4 @@ result_two = jsons_two.map do |json|
   QPXResult.new(json)
 end
 
-result_one.first.trips.destination_city
+p result_one.first.trips.first.destination_city
