@@ -10,7 +10,7 @@ class QPXResult
     @trips = create_trips(@data['trips']['tripOption'])
   end
 
-  def list_trips_by_price
+  def list_trips
     trips_by_price = @trips.map do |trip|
       [trip.price, trip.destination_city, trip.destination_airport]
     end

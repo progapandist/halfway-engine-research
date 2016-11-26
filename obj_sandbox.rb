@@ -10,4 +10,4 @@ comparator = Comparator.new(jsons_one, jsons_two)
 #comparator.print_readable
 
 test_result = QPXResult.new(jsons_two[1])
-p test_result.list_trips_by_price()
+p test_result.list_trips
