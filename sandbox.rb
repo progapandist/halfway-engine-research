@@ -49,6 +49,21 @@ def display_cheapest(results)
   puts "#{all_prices_sorted(results).first[1]} for #{all_prices_sorted(results).first[0]}"
 end
 
-p all_prices_sorted(origin_one)
-p "---------"
-p all_prices_sorted(origin_two)
+p results_one = all_prices_sorted(origin_one)
+p "-----------"
+p results_two = all_prices_sorted(origin_two)
+
+# CHEAPEST CITY FOR BOTH TRAVELLERS
+
+just_cities_one = results_one.map do |result|
+  result[1][0]
+end
+
+just_cities_two = results_two.map do |result|
+  result[1][0]
+end
+
+p just_cities_one.uniq!
+p just_cities_two.uniq!
+
+# CHEAPEST CITY FOR TOTAL FROM TWO CITIES
