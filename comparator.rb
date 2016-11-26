@@ -16,7 +16,6 @@ class Comparator
   private
 
   def prepare_readable(jsons_one, jsons_two)
-
     results_one = jsons_one.map do |json|
       QPXResult.new(json)
     end
