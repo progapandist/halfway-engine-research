@@ -8,3 +8,4 @@ jsons_two = JSONResults::FROM_ORIGIN2
 
 comparator = Comparator.new(jsons_one, jsons_two)
 p comparator.all_trips_one.map { |trip| trip.price }.sort
+p comparator.combine_prices
