@@ -1,6 +1,6 @@
 require 'rest-client'
 require 'json'
-require 'secret'
+require_relative 'secret'
 
 class QPXRequester
 
