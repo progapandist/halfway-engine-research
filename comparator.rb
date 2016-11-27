@@ -20,10 +20,10 @@ class Comparator
   def combine_prices
     output = {}
     @all_trips_one.each do |trip_1|
-      @all_trips_two.trips.each do |trip_2|
+      @all_trips_two.each do |trip_2|
         if trip_1.destination_city == trip_2.destination_city
-          output[:combined_price] << trip_1.price + trip_2.price
-          output[:trips] == [trip_1, trip_2]
+          output[:combined_price] = trip_1.price + trip_2.price
+          output[:trips] = [trip_1, trip_2]
         end
       end
       output
