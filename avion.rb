@@ -2,27 +2,6 @@ require 'rest-client' # Make sure you have this gem!
 require 'json'
 
 module Avion
-  # A helper to build arrays of possible flights for each of two origins
-  # use 3-letter airport codes as arguments
-  def self.generate_routes(airports, origin1, origin2)
-    possible_from_origin1 = airports.map do |airport|
-      if airport != origin1 && airport!= origin2
-        [origin1, airport]
-      end
-    end
-
-    possible_from_origin2 = airports.map do |airport|
-      if airport != origin1 && airport!= origin2
-        [origin2, airport]
-      end
-    end
-
-    return {
-      from_origin: possible_from_origin1.compact,
-      from_destination: possible_from_origin2.compact
-    }
-  end
-
   # Wraps an individual QPX response
   class QPXResult
     attr_reader :trips
@@ -191,5 +170,38 @@ module Avion
       readable_two = readable_two.flatten(1).sort
       [readable_one, readable_two]
     end
+  end
+
+  # MODULE METHODS
+
+  # A helper to build arrays of possible flights for each of two origins
+  # use 3-letter airport codes as arguments
+  def self.generate_routes(airports, origin1, origin2)
+    possible_from_origin1 = airports.map do |airport|
+      if airport != origin1 && airport!= origin2
+        [origin1, airport]
+      end
+    end
+
+    possible_from_origin2 = airports.map do |airport|
+      if airport != origin1 && airport!= origin2
+        [origin2, airport]
+      end
+    end
+
+    return {
+      from_a: possible_from_origin1.compact,
+      from_b: possible_from_origin2.compact
+    }
+  end
+
+  def self.print_result(result)
+    puts "The cheapest city to get from #{result[:trips][0].origin_airport} and #{result[:trips][1].origin_airport} is #{result[:destination_city]}"
+    puts "Flight 1:"
+    puts "From #{result[:trips][0].origin_airport} to #{result[:trips][0].destination_airport} for #{result[:trips][0].price}"
+    puts "Flight 2:"
+    puts "From #{result[:trips][1].origin_airport} to #{result[:trips][1].destination_airport} for #{result[:trips][1].price}"
+    puts "Total cost:"
+    puts "#{result[:total]}"
   end
 end
