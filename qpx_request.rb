@@ -15,7 +15,7 @@ class QPXRequester
 
   def make_request
     url = "https://www.googleapis.com/qpxExpress/v1/trips/search?key=" + @api_key
-    p request = compose_request
+    request = compose_request
     response = RestClient.post url, request, {content_type: :json, accept: :json}
     response.body
   end
@@ -44,3 +44,4 @@ class QPXRequester
 end
 
 requester = QPXRequester.new(origin: "LIS", destination: "AMS", date: "2016-11-28", trip_options: 3, api_key: Secret::QPX_KEY)
+# p requester.make_request
