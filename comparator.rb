@@ -9,14 +9,6 @@ class Comparator
     @all_trips_two = list_all_trips(@results_two)
   end
 
-  def print_readable
-    output = prepare_readable
-    p output[0]
-    puts "========="
-    p output[1]
-  end
-
-  # TODO
   def combine_prices
     output = []
     @all_trips_one.each do |trip_1|
@@ -31,6 +23,13 @@ class Comparator
       end
     end
     output
+  end
+
+  def print_readable
+    output = prepare_readable
+    p output[0]
+    puts "========="
+    p output[1]
   end
 
   private
