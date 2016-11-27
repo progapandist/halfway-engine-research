@@ -2,6 +2,27 @@ require 'rest-client' # Make sure you have this gem!
 require 'json'
 
 module Avion
+  # A helper to build arrays of possible flights for each of two origins
+  # use 3-letter airport codes as arguments
+  def self.generate_routes(airports, origin1, origin2)
+    possible_from_origin1 = airports.map do |airport|
+      if airport != origin1 && airport!= origin2
+        [origin1, airport]
+      end
+    end
+
+    possible_from_origin2 = airports.map do |airport|
+      if airport != origin1 && airport!= origin2
+        [origin2, airport]
+      end
+    end
+
+    return {
+      from_origin: possible_from_origin1.compact,
+      from_destination: possible_from_origin2.compact
+    }
+  end
+
   # Wraps an individual QPX response
   class QPXResult
     attr_reader :trips
@@ -116,7 +137,7 @@ module Avion
       @all_trips_two = list_all_trips(@results_two)
     end
 
-    # Our main secret sauce for now 
+    # Our main secret sauce for now
     def combine_prices
       output = []
       @all_trips_one.each do |trip_1|

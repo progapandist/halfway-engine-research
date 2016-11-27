@@ -1,8 +1,8 @@
-airports = %w(SXF TXL LHR LGW CDG ORY BCN BRU AMS MAD LIS BUD ATH NCE FCO CIA ZRH PRG VIE LIN MXP)
+airports = %w(SXF TXL LHR LGW CDG ORY BCN BRU AMS MAD LIS BUD ATH NCE CIA ZRH VIE PRG MXP)
 origin1 = "LIS"
 origin2 = "PRG"
 
-# A helper to build arrays of possible flights for each of two origins 
+# A helper to build arrays of possible flights for each of two origins
 def possible_flights(list, args = { origin1: "LIS", origin2: "PRG" })
   origin1 = args[:origin1]
   origin2 = args[:origin2]
