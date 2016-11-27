@@ -24,6 +24,7 @@ class Comparator
         if trip_1.destination_city == trip_2.destination_city
           output[:combined_price] = trip_1.price + trip_2.price
           output[:trips] = [trip_1, trip_2]
+          
         end
       end
       output
