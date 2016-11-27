@@ -1,6 +1,6 @@
 # LE AVION engine for Halfway project
 
-A work-in-progress Ruby object wrapper for Google QPX API. All classes and helper methods are defined in Avion module. See comments in avion_tester for details.
+A work-in-progress Ruby object wrapper for Google QPX API. All classes and helper methods are defined in Avion module. See comments in avion_tester.rb and avion.rb for details.
 
 **Instructions**:
 
