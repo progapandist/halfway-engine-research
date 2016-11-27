@@ -23,7 +23,8 @@ class Comparator
       @all_trips_two.each do |trip_2|
         if trip_1.destination_city == trip_2.destination_city
           info = {}
-          info[:combined_price] = trip_1.price + trip_2.price
+          info[:destination_city] = trip_1.destination_city
+          info[:total] = trip_1.price + trip_2.price
           info[:trips] = [trip_1, trip_2]
           output << info
         end

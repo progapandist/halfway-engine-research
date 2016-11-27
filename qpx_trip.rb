@@ -1,13 +1,14 @@
 require 'json'
 
 class QPXTrip
-  attr_reader :price, :destination_city, :destination_airport
+  attr_reader :price, :destination_city, :destination_airport, :origin_airport
 
   def initialize(trip)
     @trip = trip
     @price = extract_total_price(@trip)
     @destination_city = extract_destination_city(@trip)
     @destination_airport = extract_destination_airport(@trip)
+    @origin_airport = extract_origin_airport(@trip)
   end
 
   private
@@ -25,6 +26,10 @@ class QPXTrip
   def extract_destination_city(trip)
     # This is how we get to the city cody
     trip['pricing'].first['fare'].first['destination']
+  end
+
+  def extract_origin_airport(trip)
+    trip['pricing'].first['fare'].first['origin']
   end
 
   def extract_destination_airport(trip)
