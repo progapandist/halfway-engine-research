@@ -1,5 +1,4 @@
 require 'json'
-require_relative 'json_results'
 require_relative 'qpx_trip'
 
 class QPXResult

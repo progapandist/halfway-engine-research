@@ -1,69 +1,15 @@
-require 'json'
-require_relative 'json_results.rb'
+one = [[48.91, "MAD", "MAD"], [61.91, "MAD", "MAD"], [69.91, "MAD", "MAD"], [73.91, "PAR", "ORY"], [76.91, "BCN", "BCN"], [80.91, "ZRH", "ZRH"], [80.91, "ZRH", "ZRH"], [81.91, "ZRH", "ZRH"], [85.91, "BCN", "BCN"], [85.91, "BCN", "BCN"], [85.91, "BCN", "BCN"], [90.91, "ZRH", "ZRH"], [98.91, "MAD", "MAD"], [99.91, "MAD", "MAD"], [105.91, "PAR", "ORY"], [105.91, "PAR", "ORY"], [105.91, "PAR", "ORY"], [110.91, "PAR", "ORY"], [136.91, "BER", "TXL"], [136.91, "MIL", "MXP"], [143.91, "ATH", "ATH"], [157.91, "ATH", "ATH"], [159.91, "MAD", "MAD"], [159.91, "MAD", "MAD"], [159.91, "MAD", "MAD"], [160.91, "MAD", "MAD"], [160.91, "MAD", "MAD"], [164.23, "LON", "LHR"], [164.23, "LON", "LHR"], [164.91, "BCN", "BCN"], [171.91, "BRU", "BRU"]]
 
-origin_one = JSONResults::FROM_ORIGIN1
-origin_two = JSONResults::FROM_ORIGIN2
+two = [[31.12, "LON", "LGW"], [31.12, "LON", "LGW"], [46.03, "PAR", "CDG"], [50.91, "PAR", "CDG"], [55.02, "PAR", "CDG"], [55.02, "PAR", "CDG"], [55.02, "PAR", "CDG"], [57.9, "PAR", "CDG"], [60.9, "PAR", "CDG"], [70.93, "PAR", "CDG"], [71.08, "PAR", "CDG"], [71.08, "PAR", "CDG"], [71.89, "ROM", "FCO"], [71.89, "ROM", "FCO"], [73.0, "BRU", "BRU"], [74.15, "AMS", "AMS"], [74.15, "AMS", "AMS"], [74.15, "BCN", "BCN"], [74.15, "MAD", "MAD"], [74.15, "MAD", "MAD"]]
 
+joint = []
 
-def json_trip_options(jsons)
-  jsons.map do |json|
-    JSON.parse(json)['trips']['tripOption']
+one.each do |arr1|
+  two.each do |arr2|
+    if arr1[1] == arr2[1]
+      joint << [arr1[0] + arr2[0], arr1[1]]
+    end
   end
 end
 
-def extract_price(trip_option)
-  # Mock currency convertion for czech koruna (* 0.037 to get EUR)
-  if trip_option['saleTotal'] =~ /CZK/
-    (trip_option['saleTotal'].match(/\d+\.*\d+/)[0].to_f * 0.037).round(2)
-  else
-    trip_option['saleTotal'].match(/\d+\.*\d+/)[0].to_f
-  end
-end
-
-def extract_destination(trip_option)
-  # This is how we get to destination airport code
-  airport_code = trip_option['slice'].first['segment'].first['leg'].first['destination']
-  #this is how we get to the city
-  city_code = trip_option['pricing'].first['fare'].first['destination']
-
-  [city_code, airport_code]
-end
-
-def all_prices_sorted(jsons)
-  all_options = json_trip_options(jsons).flatten
-  prices_for_all_options = all_options.map { |option| extract_price(option) }
-  cities_for_all_options = all_options.map { |option| extract_destination(option) }
-  prices_for_all_options.zip(cities_for_all_options).sort
-end
-
-def display_all(results)
-  all_cities_with_prices = all_prices_sorted(results)
-  all_cities_with_prices.each { |e| puts "#{e[0]} - #{e[1]}" }
-end
-
-def cheapest(results)
-  all_prices_sorted(results).first[0]
-end
-
-def display_cheapest(results)
-  puts "#{all_prices_sorted(results).first[1]} for #{all_prices_sorted(results).first[0]}"
-end
-
-p results_one = all_prices_sorted(origin_one)
-p "-----------"
-p results_two = all_prices_sorted(origin_two)
-
-# CHEAPEST CITY FOR BOTH TRAVELLERS
-
-just_cities_one = results_one.map do |result|
-  result[1][0]
-end
-
-just_cities_two = results_two.map do |result|
-  result[1][0]
-end
-
-p just_cities_one.uniq!
-p just_cities_two.uniq!
-
-# CHEAPEST CITY FOR TOTAL FROM TWO CITIES
+p joint.sort
