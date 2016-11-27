@@ -3,8 +3,8 @@ require_relative 'secret'
 require_relative 'json_results'
 
 airports = %w(SXF LHR CDG ORY BCN AMS MAD LIS PRG)
-origin_a = "LIS"
-origin_b = "PRG"
+origin_a = "MAD"
+origin_b = "SXF"
 date = "2016-11-30"
 routes = Avion.generate_routes(airports, origin_a, origin_b)
 
@@ -12,7 +12,7 @@ routes = Avion.generate_routes(airports, origin_a, origin_b)
 jsons_from_a = [] # Use JSONResults::FROM_ORIGIN1 for cashed results
 jsons_from_b = [] # JSONResults::FROM_ORIGIN2 for cashed results
 
-p Time.now
+p start_time = Time.now
 
 puts "=============="
 
@@ -32,4 +32,8 @@ Avion.print_result(combined_results)
 
 puts "=============="
 
-p Time.now
+p end_time = Time.now
+
+puts "=============="
+
+p "It took #{end_time - start_time} to get results from Google"
