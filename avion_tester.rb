@@ -16,6 +16,7 @@ p start_time = Time.now
 
 puts "=============="
 
+# NOTE: You must user your own API string from Google QPX instead of Secret::QPX_KEY
 routes[:from_a].each do |route|
   jsons_from_a << Avion::QPXRequester.new(origin: route.first, destination: route.last, date: date, trip_options: 5, api_key: Secret::QPX_KEY).make_request
 end
