@@ -9,6 +9,7 @@ class QPXResult
     @trips = create_trips(@data['trips']['tripOption'])
   end
 
+  # Deprecated method
   def list_trips
     trips_by_price = @trips.map do |trip|
       [trip.price, trip.destination_city, trip.destination_airport]

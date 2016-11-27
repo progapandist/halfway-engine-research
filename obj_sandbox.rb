@@ -1,7 +1,6 @@
 require 'json'
 require_relative 'json_results'
-require_relative 'qpx_result'
-require_relative 'comparator'
+require_relative 'avion'
 
 jsons_one = JSONResults::FROM_ORIGIN1
 jsons_two = JSONResults::FROM_ORIGIN2

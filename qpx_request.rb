@@ -1,9 +1,7 @@
-require 'rest-client'
-require 'json'
+require_relative 'avion'
 require_relative 'secret'
 
 class QPXRequester
-
   # date should be a string in "YYYY-MM-DD" format
   def initialize(args = {})
     @origin = args[:origin]
@@ -40,8 +38,7 @@ class QPXRequester
       }
     return JSON.generate(request_hash)
   end
-
 end
 
-requester = QPXRequester.new(origin: "LIS", destination: "AMS", date: "2016-11-28", trip_options: 3, api_key: Secret::QPX_KEY)
-# p requester.make_request
+requester = Avion::QPXRequester.new(origin: "LIS", destination: "AMS", date: "2016-11-28", trip_options: 3, api_key: Secret::QPX_KEY)
+p requester.make_request

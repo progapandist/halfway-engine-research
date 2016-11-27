@@ -36,5 +36,4 @@ class QPXTrip
     # This is how we get to destination airport code
     trip['slice'].first['segment'].first['leg'].first['destination']
   end
-
 end
