@@ -116,6 +116,7 @@ module Avion
       @all_trips_two = list_all_trips(@results_two)
     end
 
+    # Our main secret sauce for now 
     def combine_prices
       output = []
       @all_trips_one.each do |trip_1|
