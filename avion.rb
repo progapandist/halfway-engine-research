@@ -39,7 +39,7 @@ module Avion
                 :origin_airport, :departure_time, :arrival_time,
                 :currency
     def initialize(trip)
-      return if trip == {} # safeguard if the are no trips in JSON
+      return if trip == {} # Safeguard if the are no trips in JSON. Extraction methods won't be called on nil
       @trip = trip
       @currency = nil # will be assigned by the call to extract_total_price
       @price = extract_total_price(@trip)
@@ -217,11 +217,13 @@ module Avion
     }
   end
 
-  def self.print_result(result)
+  def self.print_result(result, results)
     flight_a = result[:trips][0]
     flight_b = result[:trips][1]
 
-    puts "According to our little fairies, the cheapest city to get from #{flight_a.origin_airport} and #{flight_b.origin_airport} is #{result[:destination_city]}"
+    nth = results.index(result)
+
+    puts "According to our little fairies, the #{nth + 1}st cheapest city to get from #{flight_a.origin_airport} and #{flight_b.origin_airport} is #{result[:destination_city]}"
     puts "Flight 1:"
     puts "From #{flight_a.origin_airport} to #{flight_a.destination_airport} departing on #{flight_a.departure_time}, arriving on #{flight_a.arrival_time} for #{flight_a.price}#{flight_a.currency}"
     puts "Flight 2:"

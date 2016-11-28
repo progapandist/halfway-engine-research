@@ -28,7 +28,7 @@ puts "=============="
 comparator = Avion::Comparator.new(jsons_from_a, jsons_from_b)
 comparison_results = comparator.combine_prices
 sorted_results = comparison_results.sort_by { |info| info[:total] }
-cheapest = sorted_results.first
+cheapest = sorted_results[56]
 
 puts "Total requests made to Google QPX: #{jsons_from_a.count + jsons_from_b.count} "
 puts "From city A: #{jsons_from_a.count}"
@@ -38,7 +38,7 @@ puts "Total trips analyzed: #{comparison_results.count}"
 puts "=============="
 
 # render to console
-Avion.print_result(cheapest)
+Avion.print_result(cheapest, sorted_results)
 
 puts "=============="
 
