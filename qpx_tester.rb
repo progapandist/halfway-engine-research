@@ -46,4 +46,4 @@ p end_time = Time.now
 
 puts "=============="
 
-p "It took #{end_time - start_time}.round(2) seconds to get results from Google"
+p "It took #{(end_time - start_time).round(2)} seconds to get results from Google"
