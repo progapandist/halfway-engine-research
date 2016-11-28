@@ -7,7 +7,14 @@ module Avion
     attr_reader :trips
     def initialize(json) # in JSON
       @data = JSON.parse(json)
-      @trips = create_trips(@data['trips']['tripOption'])
+      # TODO: Test with actual bad response 
+      # safeguard for when there are no flights
+      unless @data['trips'].nil?
+        trips = create_trips(@data['trips']['tripOption'])
+      else
+        trips = [QPXTrip.new({})]
+      end
+      @trips = trips
     end
 
     # Deprecated method
@@ -30,6 +37,7 @@ module Avion
   class QPXTrip
     attr_reader :price, :destination_city, :destination_airport, :origin_airport
     def initialize(trip)
+      return if trip == {} # safeguard if the are no trips in JSON
       @trip = trip
       @price = extract_total_price(@trip)
       @destination_city = extract_destination_city(@trip)
