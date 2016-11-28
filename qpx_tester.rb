@@ -28,7 +28,7 @@ puts "=============="
 comparator = Avion::Comparator.new(jsons_from_a, jsons_from_b)
 comparison_results = comparator.combine_prices
 sorted_results = comparison_results.sort_by { |info| info[:total] }
-cheapest = sorted_results.first
+cheapest = sorted_results[100]
 
 puts "Total trips analyzed: "
 p comparison_results.count
