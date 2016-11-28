@@ -36,10 +36,12 @@ module Avion
   # Wraps an individual QPX trip option inside each response
   class QPXTrip
     attr_reader :price, :destination_city, :destination_airport,
-                :origin_airport, :departure_time, :arrival_time
+                :origin_airport, :departure_time, :arrival_time,
+                :currency
     def initialize(trip)
       return if trip == {} # safeguard if the are no trips in JSON
       @trip = trip
+      @currency = nil # will be assigned by the call to extract_total_price
       @price = extract_total_price(@trip)
       @destination_city = extract_destination_city(@trip)
       @destination_airport = extract_destination_airport(@trip)
@@ -59,9 +61,10 @@ module Avion
     end
 
     def extract_total_price(trip)
+      @currency = trip['saleTotal'].match(/\w{3}/).to_s
       # Mock currency convertion for czech koruna (* 0.037 to get EUR)
       # TODO: get rid of in actual project, will only work in eurozone for the demo
-      if trip['saleTotal'] =~ /CZK/
+      if @currency == "CZK"
         (trip['saleTotal'].match(/\d+\.*\d+/)[0].to_f * 0.037).round(2)
       else
         trip['saleTotal'].match(/\d+\.*\d+/)[0].to_f
@@ -215,11 +218,14 @@ module Avion
   end
 
   def self.print_result(result)
-    puts "The cheapest city to get from #{result[:trips][0].origin_airport} and #{result[:trips][1].origin_airport} is #{result[:destination_city]}"
+    flight_a = result[:trips][0]
+    flight_b = result[:trips][1]
+
+    puts "According to our little fairies, the cheapest city to get from #{flight_a.origin_airport} and #{flight_b.origin_airport} is #{result[:destination_city]}"
     puts "Flight 1:"
-    puts "From #{result[:trips][0].origin_airport} to #{result[:trips][0].destination_airport} departing on #{result[:trips][0].departure_time}, arriving on #{result[:trips][0].arrival_time} for #{result[:trips][0].price}"
+    puts "From #{flight_a.origin_airport} to #{flight_a.destination_airport} departing on #{flight_a.departure_time}, arriving on #{flight_a.arrival_time} for #{flight_a.price}#{flight_a.currency}"
     puts "Flight 2:"
-    puts "From #{result[:trips][1].origin_airport} to #{result[:trips][1].destination_airport} departing on #{result[:trips][1].departure_time}, arriving on #{result[:trips][1].arrival_time} for #{result[:trips][1].price}"
+    puts "From #{flight_b.origin_airport} to #{flight_b.destination_airport} departing on #{flight_b.departure_time}, arriving on #{flight_b.arrival_time} for #{flight_b.price}#{flight_b.currency}"
     puts "Total cost:"
     puts "#{result[:total]}"
   end
