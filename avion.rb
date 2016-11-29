@@ -1,18 +1,30 @@
 require 'rest-client' # Make sure you have this gem!
 require 'json'
+require_relative 'secret'
 
 module Avion
+
+  # This is the final travel info object that is API agnostic
+  # TODO: Eventually, get rid of nesting
+  class CombinedTravelPackage
+    attr_reader :destination_city, :total, :trips
+    def initialize(args = {})
+      @destination_city = args[:destination_city]
+      @total = args[:total]
+      @trips = args[:trips]
+    end
+  end
+
   # Wraps an individual QPX response
-  class QPXResult
+  class QPXResponse
     attr_reader :trips
     def initialize(json) # in JSON
       @data = JSON.parse(json)
-      # TODO: Test with actual bad response
-      # safeguard for when there are no flights
+      # safeguard for when there are no flights (e.g. Bad Response)
       unless @data['trips'].nil?
         trips = create_trips(@data['trips']['tripOption'])
       else
-        trips = [QPXTrip.new({})]
+        trips = [QPXTripOption.new({})]
       end
       @trips = trips
     end
@@ -28,16 +40,16 @@ module Avion
 
     def create_trips(trips)
       trips.map do |trip|
-        QPXTrip.new(trip)
+        QPXTripOption.new(trip)
       end
     end
   end
 
   # Wraps an individual QPX trip option inside each response
-  class QPXTrip
+  class QPXTripOption
     attr_reader :price, :destination_city, :destination_airport,
-                :origin_airport, :departure_time, :arrival_time,
-                :currency
+                :origin_airport, :departure_time_there, :arrival_time_there,
+                :departure_time_back, :arrival_time_back, :currency, :carrier
     def initialize(trip)
       return if trip == {} # Safeguard if the are no trips in JSON. Extraction methods won't be called on nil
       @trip = trip
@@ -46,18 +58,26 @@ module Avion
       @destination_city = extract_destination_city(@trip)
       @destination_airport = extract_destination_airport(@trip)
       @origin_airport = extract_origin_airport(@trip)
-      @departure_time = extract_departure_time(@trip)
-      @arrival_time = extract_arrival_time(@trip)
+      @departure_time_there = extract_departure_time(@trip, 0)
+      @arrival_time_there = extract_arrival_time(@trip, 0)
+      @departure_time_back = extract_departure_time(@trip, 1)
+      @arrival_time_back = extract_arrival_time(@trip, 1)
+      @carrier = extract_carrier(@trip)
+      @trip = nil # we don't need it anymore, no need to lug huge JSON around
     end
 
     private
 
-    def extract_departure_time(trip)
-      Time.parse trip['slice'].first['segment'].first['leg'].first['departureTime']
+    def extract_carrier(trip)
+      trip['slice'].first['segment'].first['flight']['carrier']
     end
 
-    def extract_arrival_time(trip)
-      Time.parse trip['slice'].first['segment'].first['leg'].first['arrivalTime']
+    def extract_departure_time(trip, slice)
+      Time.parse trip['slice'][slice]['segment'].first['leg'].first['departureTime']
+    end
+
+    def extract_arrival_time(trip, slice)
+      Time.parse trip['slice'][slice]['segment'].first['leg'].first['arrivalTime']
     end
 
     def extract_total_price(trip)
@@ -93,7 +113,8 @@ module Avion
     def initialize(args = {})
       @origin = args[:origin] # airport code
       @destination = args[:destination] #airport code
-      @date = args[:date]
+      @date_there = args[:date_there]
+      @date_back = args[:date_back]
       @trip_options = args[:trip_options]
       @api_key = args[:api_key]
     end
@@ -113,7 +134,10 @@ module Avion
       # WITHOUT BREAKING THE STRUCTURE!
       request_hash = {
         "request"=>
-        {"slice"=>[{"origin"=>@origin, "destination"=>@destination, "date"=>@date}],
+        {"slice"=>[
+          {"origin"=>@origin, "destination"=>@destination, "date"=>@date_there, "maxStops"=>0},
+          {"origin"=>@destination, "destination"=>@origin, "date"=>@date_back, "maxStops"=>0}
+        ],
         "passengers"=>
         {"adultCount"=>1,
           "infantInLapCount"=>0,
@@ -144,11 +168,11 @@ module Avion
       @all_trips_one.each do |trip_1|
         @all_trips_two.each do |trip_2|
           if trip_1.destination_city == trip_2.destination_city
-            info = {}
-            info[:destination_city] = trip_1.destination_city
-            info[:total] = trip_1.price + trip_2.price
-            info[:trips] = [trip_1, trip_2]
-            output << info
+            output << CombinedTravelPackage.new(
+            destination_city: trip_1.destination_city,
+            total: trip_1.price + trip_2.price,
+            trips: [trip_1, trip_2]
+            )
           end
         end
       end
@@ -166,7 +190,7 @@ module Avion
 
     def objectify(jsons)
       jsons.map do |json|
-        QPXResult.new(json)
+        QPXResponse.new(json)
       end
     end
 
@@ -218,17 +242,38 @@ module Avion
   end
 
   def self.print_result(result, results)
-    flight_a = result[:trips][0]
-    flight_b = result[:trips][1]
+    flight_a = result.trips.first
+    flight_b = result.trips.last
 
     nth = results.index(result)
 
-    puts "According to our little fairies, the #{nth + 1}st cheapest city to get from #{flight_a.origin_airport} and #{flight_b.origin_airport} is #{result[:destination_city]}"
+    puts "According to our little fairies, the #{nth + 1}st cheapest city to get from #{flight_a.origin_airport} and #{flight_b.origin_airport} is #{result.destination_city}"
+    puts "Ann flies with #{flight_a.carrier}:"
     puts "Flight 1:"
-    puts "From #{flight_a.origin_airport} to #{flight_a.destination_airport} departing on #{flight_a.departure_time}, arriving on #{flight_a.arrival_time} for #{flight_a.price}#{flight_a.currency}"
+    puts "From #{flight_a.origin_airport} to #{flight_a.destination_airport} departing on #{flight_a.departure_time_there}, arriving on #{flight_a.arrival_time_there}"
     puts "Flight 2:"
-    puts "From #{flight_b.origin_airport} to #{flight_b.destination_airport} departing on #{flight_b.departure_time}, arriving on #{flight_b.arrival_time} for #{flight_b.price}#{flight_b.currency}"
-    puts "Total cost:"
-    puts "#{result[:total]}"
+    puts "From #{flight_a.destination_airport} to #{flight_a.origin_airport} departing on #{flight_a.departure_time_back}, arriving on #{flight_a.arrival_time_back}"
+    puts "Cost for Ann: #{flight_a.price}#{flight_a.currency}"
+    puts ""
+    puts "Bob flies with #{flight_b.carrier}:"
+    puts "Flight 1:"
+    puts "From #{flight_b.origin_airport} to #{flight_b.destination_airport} departing on #{flight_b.departure_time_there}, arriving on #{flight_b.arrival_time_there}"
+    puts "Flight 2:"
+    puts "From #{flight_b.destination_airport} to #{flight_b.origin_airport} departing on #{flight_b.departure_time_back}, arriving on #{flight_b.arrival_time_back}"
+    puts "Cost for Bob: #{flight_b.price}#{flight_b.currency}"
+
+    puts "Total cost for both:"
+    puts "#{result.total.round(2)}"
+  end
+
+  #  NOTE: You must user your own API string from Google QPX instead of Secret::QPX_KEY
+  def self.query_qpx(routes, date_there, date_back, filename)
+    jsons = []
+    routes.each do |route|
+      jsons << Avion::QPXRequester.new(origin: route.first, destination: route.last, date_there: date_there, date_back: date_back, trip_options: 5, api_key: Secret::QPX_KEY).make_request
+    end
+    # Write all jsons to file for caching during testing
+    File.open(filename, 'w') { |file| file.write(jsons) }
+    return jsons
   end
 end
