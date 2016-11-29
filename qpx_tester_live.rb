@@ -12,9 +12,8 @@ p start_time = Time.now
 
 puts "=============="
 
-jsons_from_a = Avion.query_qpx(routes[:from_a], date_there, date_back, "results_cache/mock_from_lis.txt")
-
-jsons_from_b = Avion.query_qpx(routes[:from_b], date_there, date_back, "results_cache/mock_from_vno.txt")
+jsons_from_a = Avion.query_qpx(routes[:from_a], date_there, date_back, "results_cache/from_a.txt")
+jsons_from_b = Avion.query_qpx(routes[:from_b], date_there, date_back, "results_cache/from_b.txt")
 
 comparator = Avion::Comparator.new(jsons_from_a, jsons_from_b)
 comparison_results = comparator.combine_prices
