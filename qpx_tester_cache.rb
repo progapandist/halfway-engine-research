@@ -1,4 +1,5 @@
 require_relative 'avion'
+require 'yaml'
 
 p start_time = Time.now
 
@@ -21,7 +22,7 @@ puts "Total trips analyzed: #{comparison_results.count}"
 puts "=============="
 
 # render to console
-(0..3).each { |idx| Avion.print_result(sorted_results[idx], sorted_results) }
+(0..1).each { |idx| Avion.print_result(sorted_results[idx], sorted_results) }
 
 puts "=============="
 
@@ -34,3 +35,11 @@ p "It took #{(end_time - start_time).round(2)} seconds to get results from Googl
 puts "============="
 
 p sorted_results.first
+
+puts "============="
+
+obj = YAML::dump(sorted_results.first.to_s)
+puts obj
+
+back = YAML::load(obj)
+puts back

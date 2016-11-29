@@ -12,6 +12,11 @@ module Avion
       @total = args[:total]
       @trips = args[:trips]
     end
+
+    # For YAML serialization:
+    # def to_s
+    #   "#{@destination_city}, #{@total}\n #{@trips.first}\n #{@trips.last}\n"
+    # end
   end
 
   # Wraps an individual QPX response
@@ -62,6 +67,10 @@ module Avion
       @arrival_time_back = extract_arrival_time(option, 1)
       @carrier = extract_carrier(option)
     end
+
+    # def to_s
+    #   "#{@price}, #{@destination_city}, #{@destination_airport}"
+    # end
 
     private
 
@@ -150,7 +159,7 @@ module Avion
 
   # TODO: Ideally, comparator have to be API agnostic, so we need to
   # abstract one level up from QPXTripOption
-  
+
   # Our main comparison logic goes here. Takes two arrays of JSON QPX responses
   # one for each origin
   class Comparator
@@ -248,7 +257,7 @@ module Avion
 
     nth = results.index(result)
 
-    puts "According to our little fairies, the #{nth + 1}st cheapest city to get from #{flight_a.origin_airport} and #{flight_b.origin_airport} is #{result.destination_city}"
+    puts "According to our little fairies, the number #{nth + 1} cheapest city to get from #{flight_a.origin_airport} and #{flight_b.origin_airport} is #{result.destination_city}"
     puts "Ann flies with #{flight_a.carrier}:"
     puts "Flight 1:"
     puts "From #{flight_a.origin_airport} to #{flight_a.destination_airport} departing on #{flight_a.departure_time_there}, arriving on #{flight_a.arrival_time_there}"
@@ -265,6 +274,8 @@ module Avion
 
     puts "Total cost for both:"
     puts "#{result.total.round(2)}"
+
+    puts "========"
   end
 
   #  NOTE: You must user your own API string from Google QPX instead of Secret::QPX_KEY
