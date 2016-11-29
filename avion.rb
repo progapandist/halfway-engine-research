@@ -21,7 +21,7 @@ module Avion
     def initialize(json) # in JSON
       @data = JSON.parse(json)
       # safeguard for when there are no flights (e.g. Bad Response)
-      unless @data['trips'].nil?
+      unless @data['trips']['tripOption'].nil?
         trips = create_trips(@data['trips']['tripOption'])
       else
         trips = [QPXTripOption.new({})]
@@ -51,7 +51,7 @@ module Avion
                 :origin_airport, :departure_time_there, :arrival_time_there,
                 :departure_time_back, :arrival_time_back, :currency, :carrier
     def initialize(option)
-      return if option == {} # Safeguard if the are no trips in JSON. Extraction methods won't be called on nil
+      return if option == {} # Safeguard if we had a bad response in JSON. Extraction methods won't be called on nil
       @currency = nil # will be assigned by the call to extract_total_price
       @price = extract_total_price(option)
       @destination_city = extract_destination_city(option)
@@ -165,6 +165,7 @@ module Avion
       output = []
       @all_trips_one.each do |trip_1|
         @all_trips_two.each do |trip_2|
+          next if trip_1.price == nil || trip_2.price == nil # safeguard if the trip is an empty object
           if trip_1.destination_city == trip_2.destination_city
             output << CombinedTravelPackage.new(
             destination_city: trip_1.destination_city,

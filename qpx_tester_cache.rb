@@ -4,8 +4,8 @@ p start_time = Time.now
 
 puts "=============="
 
-jsons_from_a = eval(File.open("results_cache/from_a.txt", "rb").read)
-jsons_from_b =  eval(File.open("results_cache/from_b.txt", "rb").read)
+jsons_from_a = eval(File.open("results_cache/mock_from_lis.txt", "rb").read)
+jsons_from_b =  eval(File.open("results_cache/mock_from_vno.txt", "rb").read)
 
 
 comparator = Avion::Comparator.new(jsons_from_a, jsons_from_b)

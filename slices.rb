@@ -1,3 +1,14 @@
+'{
+ "kind": "qpxExpress#tripsSearch",
+ "trips": {
+  "kind": "qpxexpress#tripOptions",
+  "requestId": "TNDMkNrXKMZi4H8ZN0PXFo",
+  "data": {
+   "kind": "qpxexpress#data"
+  }
+ }
+}'
+
 {
   "request": {
     "slice": [
