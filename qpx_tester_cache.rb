@@ -32,5 +32,3 @@ puts "=============="
 p "It took #{(end_time - start_time).round(2)} seconds to get results from Google"
 
 puts "============="
-
-print sorted_results

@@ -50,20 +50,18 @@ module Avion
     attr_reader :price, :destination_city, :destination_airport,
                 :origin_airport, :departure_time_there, :arrival_time_there,
                 :departure_time_back, :arrival_time_back, :currency, :carrier
-    def initialize(trip)
-      return if trip == {} # Safeguard if the are no trips in JSON. Extraction methods won't be called on nil
-      @trip = trip
+    def initialize(option)
+      return if option == {} # Safeguard if the are no trips in JSON. Extraction methods won't be called on nil
       @currency = nil # will be assigned by the call to extract_total_price
-      @price = extract_total_price(@trip)
-      @destination_city = extract_destination_city(@trip)
-      @destination_airport = extract_destination_airport(@trip)
-      @origin_airport = extract_origin_airport(@trip)
-      @departure_time_there = extract_departure_time(@trip, 0)
-      @arrival_time_there = extract_arrival_time(@trip, 0)
-      @departure_time_back = extract_departure_time(@trip, 1)
-      @arrival_time_back = extract_arrival_time(@trip, 1)
-      @carrier = extract_carrier(@trip)
-      @trip = nil # we don't need it anymore, no need to lug huge JSON around
+      @price = extract_total_price(option)
+      @destination_city = extract_destination_city(option)
+      @destination_airport = extract_destination_airport(option)
+      @origin_airport = extract_origin_airport(option)
+      @departure_time_there = extract_departure_time(option, 0)
+      @arrival_time_there = extract_arrival_time(option, 0)
+      @departure_time_back = extract_departure_time(option, 1)
+      @arrival_time_back = extract_arrival_time(option, 1)
+      @carrier = extract_carrier(option)
     end
 
     private
