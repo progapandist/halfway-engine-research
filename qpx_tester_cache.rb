@@ -21,7 +21,7 @@ puts "Total trips analyzed: #{comparison_results.count}"
 puts "=============="
 
 # render to console
-Avion.print_result(cheapest, sorted_results)
+(0..3).each { |idx| Avion.print_result(sorted_results[idx], sorted_results) }
 
 puts "=============="
 
