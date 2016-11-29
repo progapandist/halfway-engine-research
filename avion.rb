@@ -5,7 +5,6 @@ require_relative 'secret'
 module Avion
 
   # This is the final travel info object that is API agnostic
-  # TODO: Eventually, get rid of nesting
   class CombinedTravelPackage
     attr_reader :destination_city, :total, :trips
     def initialize(args = {})
@@ -149,6 +148,9 @@ module Avion
     end
   end
 
+  # TODO: Ideally, comparator have to be API agnostic, so we need to
+  # abstract one level up from QPXTripOption
+  
   # Our main comparison logic goes here. Takes two arrays of JSON QPX responses
   # one for each origin
   class Comparator
