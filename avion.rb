@@ -120,7 +120,7 @@ module Avion
           "infantInSeatCount"=>0,
           "childCount"=>0,
           "seniorCount"=>0},
-          "solutions"=>@trips_by_price,
+          "solutions"=>@trip_options,
           "refundable"=>false}
         }
       return JSON.generate(request_hash)
