@@ -36,10 +36,4 @@ puts "============="
 
 p sorted_results.first
 
-puts "============="
-
-obj = YAML::dump(sorted_results.first.to_s)
-puts obj
-
-back = YAML::load(obj)
-puts back
+# puts "============="
