@@ -2,9 +2,6 @@ require 'json'
 require_relative 'secret'
 require 'rest-client'
 
-# REQUEST
-# GET "https://api.sandbox.amadeus.com/v1.2/flights/inspiration-search?apikey=d5pVrZJnTXLofPj1BtOShfWQsAaKXgMt&origin=PAR&departure_date=2016-11-30&one-way=true&direct=true"
-
 #RESPONSE
 from_par_json = '{
   "origin": "PAR",
